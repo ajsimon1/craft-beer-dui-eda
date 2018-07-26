@@ -66,3 +66,8 @@ df_comb = df_comb.rename(index=str, columns=col_rename)
 # remove unecessary id_y column
 df_comb = df_comb.drop(labels='id_y', axis=1)
 ```
+
+Check head, tail, info and describe methods to confirm cleaned
+ data is suitable.
+
+ 

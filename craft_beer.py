@@ -37,6 +37,9 @@ df_comb = df_comb.rename(index=str, columns=col_rename)
 # remove unecessary id_y column
 df_comb = df_comb.drop(labels='id_y', axis=1)
 
+# TODO clean up data, too many NaN
+# TODO convert both df_comb to full name
+
 # questions
 # avg abv per beer style
 df_comb.groupby(by='style')['abv'].mean()
@@ -79,4 +82,56 @@ df_high_alc_style_state = df_comb.groupby(['state', 'beer_name'])['abv'].max()
 df_high_alc_style_state.sort_values(ascending=False)
 # count of style by state
 df_count_style_state = df_comb.groupby(['state', 'style'])['abv'].count()
-# TODO combine city state and get lat long for map
+
+us_state_abbrev = {
+    'Alabama': 'AL',
+    'Alaska': 'AK',
+    'Arizona': 'AZ',
+    'Arkansas': 'AR',
+    'California': 'CA',
+    'Colorado': 'CO',
+    'Connecticut': 'CT',
+    'Delaware': 'DE',
+    'Florida': 'FL',
+    'Georgia': 'GA',
+    'Hawaii': 'HI',
+    'Idaho': 'ID',
+    'Illinois': 'IL',
+    'Indiana': 'IN',
+    'Iowa': 'IA',
+    'Kansas': 'KS',
+    'Kentucky': 'KY',
+    'Louisiana': 'LA',
+    'Maine': 'ME',
+    'Maryland': 'MD',
+    'Massachusetts': 'MA',
+    'Michigan': 'MI',
+    'Minnesota': 'MN',
+    'Mississippi': 'MS',
+    'Missouri': 'MO',
+    'Montana': 'MT',
+    'Nebraska': 'NE',
+    'Nevada': 'NV',
+    'New Hampshire': 'NH',
+    'New Jersey': 'NJ',
+    'New Mexico': 'NM',
+    'New York': 'NY',
+    'North Carolina': 'NC',
+    'North Dakota': 'ND',
+    'Ohio': 'OH',
+    'Oklahoma': 'OK',
+    'Oregon': 'OR',
+    'Pennsylvania': 'PA',
+    'Rhode Island': 'RI',
+    'South Carolina': 'SC',
+    'South Dakota': 'SD',
+    'Tennessee': 'TN',
+    'Texas': 'TX',
+    'Utah': 'UT',
+    'Vermont': 'VT',
+    'Virginia': 'VA',
+    'Washington': 'WA',
+    'West Virginia': 'WV',
+    'Wisconsin': 'WI',
+    'Wyoming': 'WY',
+}
