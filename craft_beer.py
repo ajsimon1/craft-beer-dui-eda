@@ -10,12 +10,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# ################## load datasets #####################################
+# ################## load datasets ############################################
 df_beers = pd.read_csv('beers.csv', index_col=0)
 df_brews = pd.read_csv('breweries.csv', index_col=0)
 df_fatal = pd.read_csv('DUI.csv', index_col=0)
 
-# ################### clean datasets ###################################
+# ################### clean datasets ##########################################
 # add index as column for easy merging, adding to zero based index to
 # match 'brewery_id' column that is one base indexed
 df_brews['id'] = df_brews.index + 1
@@ -37,7 +37,29 @@ df_comb = df_comb.rename(index=str, columns=col_rename)
 # remove unecessary id_y column
 df_comb = df_comb.drop(labels='id_y', axis=1)
 
-# TODO clean up data, too many NaN
+# #################### clean NaN Values #######################################
+
+# work on style column NaN first
+# remove row at index 2410, values were mostly NaN
+df_comb = df_comb.drop(df_comb.index[2410])
+# replacing remaining 'style' NaN with 'unknown'
+df_comb['style'].fillna('Unknown', inplace=True)
+
+# work on 'brewery', 'city', 'state' columns
+# all NaN in above columns are from Northgate Brewing, googled beer names
+df_comb['brewery'].fillna('Northgate Brewing', inplace=True)
+df_comb['city'].fillna('Minneapolis', inplace=True)
+df_comb['state'].fillna('MN', inplace=True)
+
+# work on abv & ibu by setting NaN to average of column
+# set mean of the column to a variable
+abv_mean = df_comb['abv'].mean(skipna=True).round(2)
+ibu_mean = df_comb['ibu'].mean(skipna=True).round(2)
+# use mean var to fill NaN of each column
+df_comb['abv'].fillna(abv_mean, inplace=True)
+df_comb['ibu'].fillna(ibu_mean, inplace=True)
+
+# add questions to readme
 # TODO convert both df_comb to full name
 
 # questions

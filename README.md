@@ -67,7 +67,74 @@ df_comb = df_comb.rename(index=str, columns=col_rename)
 df_comb = df_comb.drop(labels='id_y', axis=1)
 ```
 
-Check head, tail, info and describe methods to confirm cleaned
- data is suitable.
+Check info() method on combined dataframe for insight on values
+ ```python
+ df_comb.info()
+ ```
+ ```
+  <class 'pandas.core.frame.DataFrame'>
+  Index: 2411 entries, 0 to 2410
+  Data columns (total 10 columns):
+  abv           2348 non-null float64
+  ibu           1405 non-null float64
+  beer_id       2410 non-null float64
+  beer_name     2410 non-null object
+  style         2405 non-null object
+  brewery_id    2410 non-null float64
+  ounces        2410 non-null float64
+  brewery       2405 non-null object
+  city          2405 non-null object
+  state         2405 non-null object
+  dtypes: float64(5), object(5)
+  memory usage: 207.2+ KB
+```
 
- 
+Need to take care of NaN values for various columns.
+
+For the missing *stle* column, the NaN values are replaced with ***Unknown***
+```python
+# work on style column NaN first
+# remove row at index 2410, values were mostly NaN
+df_comb = df_comb.drop(df_comb.index[2410])
+# replacing remaining 'style' NaN with 'unknown'
+df_comb['style'].fillna('Unknown', inplace=True)
+```
+
+Some googling revealed the *brewery*, *city*, *state* missing values were from a single brewery, Northgate Brewing. These values
+were also replaced with `fillna()` method.
+```python
+# work on 'brewery', 'city', 'state' columns
+# all NaN in above columns are from Northgate Brewing, googled beer names
+df_comb['brewery'].fillna('Northgate Brewing', inplace=True)
+df_comb['city'].fillna('Minneapolis', inplace=True)
+df_comb['state'].fillna('MN', inplace=True)
+```
+Finally, the *abv* and *ibu* column NaN values were filled with
+the average value of the column.
+```python
+# work on abv & ibu by setting NaN to average of column
+# set mean of the column to a variable
+abv_mean = df_comb['abv'].mean(skipna=True).round(2)
+ibu_mean = df_comb['ibu'].mean(skipna=True).round(2)
+# use mean var to fill NaN of each column
+df_comb['abv'].fillna(abv_mean, inplace=True)
+df_comb['ibu'].fillna(ibu_mean, inplace=True)
+```
+A final check with `info()` method to confirm all NaN values NaN values have been replaced.
+```
+<class 'pandas.core.frame.DataFrame'>
+Index: 2410 entries, 0 to 2409
+Data columns (total 10 columns):
+abv           2410 non-null float64
+ibu           2410 non-null float64
+beer_id       2410 non-null float64
+beer_name     2410 non-null object
+style         2410 non-null object
+brewery_id    2410 non-null float64
+ounces        2410 non-null float64
+brewery       2410 non-null object
+city          2410 non-null object
+state         2410 non-null object
+dtypes: float64(5), object(5)
+memory usage: 207.1+ KB
+```
